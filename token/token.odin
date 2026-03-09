@@ -19,7 +19,11 @@ Symbol :: enum {
 	PIPE,
 	SEMI_COLON,
 	BANG,
-	EQUAL,
+	ASSIGNMENT,
+	EQUALS,
+	NOT_EQUALS,
+	SLASH,
+	ASTERISK,
 	LESS_THAN,
 	GREATER_THAN,
 	LBRACE,
@@ -28,6 +32,8 @@ Symbol :: enum {
 	RPAREN,
 	LCURLY,
 	RCURLY,
+	ILLEGAL,
+	QUOTE,
 }
 
 DataType :: enum {
@@ -50,7 +56,3 @@ Identifier :: enum {
 // 	Main,
 // 	Return,
 // }
-
-make :: proc(literal: string, type: TokenType) -> Token {
-	return Token{literal, type}
-}
