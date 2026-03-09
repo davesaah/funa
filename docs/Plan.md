@@ -1,7 +1,8 @@
 # Working
 
-- [ ] Define types.
-- [ ] Define tokens.
+- [x] Define types.
+- [x] Define tokens.
+- [ ] Create lexer.
 - [ ] Define syntax.
 - [ ] Define grammar.
 - [ ] Build lexer.
