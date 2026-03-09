@@ -82,6 +82,8 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 		} else {
 			tok.type = token.Symbol.ILLEGAL
 		}
+	case:
+		tok.type = token.Symbol.ILLEGAL
 	}
 
 	tok.literal = l.input[start:l.current_position + 1]

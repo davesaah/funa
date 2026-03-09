@@ -5,7 +5,7 @@ import "../token"
 import "core:testing"
 
 @(test)
-get_next_token_symbols :: proc(t: ^testing.T) {
+get_next_token_symbols_single :: proc(t: ^testing.T) {
 	// Table of (input, expected literal, expected token type)
 	test_cases := []struct {
 		input:            string,
@@ -43,6 +43,32 @@ get_next_token_symbols :: proc(t: ^testing.T) {
 		tok := lexer.get_next_token(&l)
 
 		// Expect literal and type
+		testing.expect_value(t, tok.literal, tc.expected_literal)
+		testing.expect_value(t, tok.type, tc.expected_type)
+	}
+}
+
+
+@(test)
+get_next_token_symbols_multiple :: proc(t: ^testing.T) {
+	input := "'#$*(&)"
+	test_cases := []struct {
+		expected_literal: string,
+		expected_type:    token.Symbol,
+	} {
+		{"'", token.Symbol.QUOTE},
+		{"#", token.Symbol.BANG},
+		{"$", token.Symbol.ILLEGAL},
+		{"*", token.Symbol.ASTERISK},
+		{"(", token.Symbol.LPAREN},
+		{"&", token.Symbol.ILLEGAL},
+		{")", token.Symbol.RPAREN},
+	}
+
+	l := lexer.new(input)
+
+	for tc in test_cases {
+		tok := lexer.get_next_token(&l)
 		testing.expect_value(t, tok.literal, tc.expected_literal)
 		testing.expect_value(t, tok.type, tc.expected_type)
 	}
