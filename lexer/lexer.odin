@@ -68,6 +68,9 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 		tok.type = token.Symbol.QUOTE
 	case '\'':
 		tok.type = token.Symbol.QUOTE
+	case 0:
+		tok.type = token.Symbol.EOF
+		return tok
 	case '=':
 		if peek_char(l) == '=' {
 			read_next_char(l)
@@ -83,7 +86,16 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 			tok.type = token.Symbol.ILLEGAL
 		}
 	case:
-		tok.type = token.Symbol.ILLEGAL
+		if is_number(l.current_char) {
+			for is_number(l.current_char) {
+				read_next_char(l)
+			}
+			tok.type = token.DataType.NUMBER
+			tok.literal = l.input[start:l.current_position]
+			return tok
+		} else {
+			tok.type = token.Symbol.ILLEGAL
+		}
 	}
 
 	tok.literal = l.input[start:l.current_position + 1]
@@ -95,6 +107,7 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 read_next_char :: proc(l: ^Lexer) {
 	if l.next_position >= len(l.input) {
 		l.current_char = 0 // ASCII NULL
+		l.current_position = len(l.input)
 		return
 	}
 
@@ -115,4 +128,9 @@ peek_char :: proc(l: ^Lexer) -> byte {
 		return 0
 	}
 	return l.input[l.next_position]
+}
+
+@(private = "file")
+is_number :: proc(c: byte) -> bool {
+	return c >= '0' && c <= '9'
 }

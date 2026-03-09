@@ -33,6 +33,7 @@ Symbol :: enum {
 	LCURLY,
 	RCURLY,
 	ILLEGAL,
+	EOF,
 	QUOTE,
 }
 
