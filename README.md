@@ -1,4 +1,4 @@
-# BCC
+# FUNA - Functional Unix Automation
 
 I am building a compiled, functional language for automating tasks
 on UNIX-style systems. I am going to favour composability following
