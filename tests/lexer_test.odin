@@ -127,3 +127,31 @@ get_next_token_datatypes_multiple :: proc(t: ^testing.T) {
 		testing.expect_value(t, tok.type, tc.expected_type)
 	}
 }
+
+
+get_next_token_identifiers_single :: proc(t: ^testing.T) {
+	test_cases := []struct {
+		input:            string,
+		expected_literal: string,
+		expected_type:    token.TokenType,
+	} {
+		{"let", "let", token.Keyword.LET},
+		{"using", "using", token.Keyword.USING},
+		{"function", "function", token.Keyword.FUNCTION},
+		{"return", "return", token.Keyword.RETURN},
+		{"some", "some", token.DataType.IDENTIFIER},
+		{"two_people", "two_people", token.DataType.IDENTIFIER},
+		{"toe_4", "toe_4", token.DataType.IDENTIFIER},
+	}
+
+	for tc in test_cases {
+		// Initialize a fresh lexer for each case
+		l := lexer.new(tc.input)
+
+		tok := lexer.get_next_token(&l)
+
+		// Expect literal and type
+		testing.expect_value(t, tok.literal, tc.expected_literal)
+		testing.expect_value(t, tok.type, tc.expected_type)
+	}
+}

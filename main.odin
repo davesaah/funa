@@ -4,8 +4,14 @@ import "core:fmt"
 import "lexer"
 
 main :: proc() {
-	l := lexer.new("'Hello world';")
+	l := lexer.new("Hello world let using")
 	tok := lexer.get_next_token(&l)
+	fmt.println(tok)
+	tok = lexer.get_next_token(&l)
+	fmt.println(tok)
+	tok = lexer.get_next_token(&l)
+	fmt.println(tok)
+	tok = lexer.get_next_token(&l)
 	fmt.println(tok)
 	tok = lexer.get_next_token(&l)
 	fmt.println(tok)

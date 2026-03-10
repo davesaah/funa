@@ -64,20 +64,10 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 		tok.type = token.Symbol.LCURLY
 	case '}':
 		tok.type = token.Symbol.RCURLY
-	case '"':
+	case '"', '\'':
 		read_next_char(l) // skip opening quote
 		start = l.current_position
 		for l.current_char != '"' && l.current_char != 0 {
-			read_next_char(l)
-		}
-		tok.type = token.DataType.STRING
-		tok.literal = l.input[start:l.current_position]
-		read_next_char(l) // skip closing quote
-		return tok
-	case '\'':
-		read_next_char(l) // skip opening quote
-		start = l.current_position
-		for l.current_char != '\'' && l.current_char != 0 {
 			read_next_char(l)
 		}
 		tok.type = token.DataType.STRING
@@ -108,6 +98,13 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 			}
 			tok.type = token.DataType.NUMBER
 			tok.literal = l.input[start:l.current_position]
+			return tok
+		} else if is_letter(l.current_char) {
+			for is_letter(l.current_char) || is_number(l.current_char) {
+				read_next_char(l)
+			}
+			tok.literal = l.input[start:l.current_position]
+			tok.type = token.lookup_identifier(tok.literal) // identifier or keyword
 			return tok
 		} else {
 			tok.type = token.Symbol.ILLEGAL
@@ -149,4 +146,9 @@ peek_char :: proc(l: ^Lexer) -> byte {
 @(private = "file")
 is_number :: proc(c: byte) -> bool {
 	return c >= '0' && c <= '9'
+}
+
+@(private = "file")
+is_letter :: proc(c: byte) -> bool {
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
 }

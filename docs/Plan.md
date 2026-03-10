@@ -2,7 +2,8 @@
 
 - [x] Define types.
 - [x] Define tokens.
-- [ ] Create lexer.
+- [x] Create lexer.
+- [ ] Create parser.
 - [ ] Define syntax.
 - [ ] Define grammar.
 - [ ] Build lexer.

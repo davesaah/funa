@@ -2,8 +2,8 @@ package token
 
 TokenType :: union {
 	Symbol,
-	Identifier,
 	DataType,
+	Keyword,
 }
 
 Token :: struct {
@@ -38,21 +38,31 @@ Symbol :: enum {
 
 DataType :: enum {
 	NUMBER,
-	LIST,
-	MAP,
-	FILE,
 	STRING,
+	IDENTIFIER,
 }
 
-Identifier :: enum {
-	KEYWORD,
-	VARIABLE,
+Keyword :: enum {
+	USING,
+	FUNCTION,
+	LET,
+	MAIN,
+	RETURN,
 }
 
-// Keyword :: enum {
-// 	Using,
-// 	Function,
-// 	Let,
-// 	Main,
-// 	Return,
-// }
+lookup_identifier :: proc(s: string) -> TokenType {
+	switch s {
+	case "using":
+		return Keyword.USING
+	case "function":
+		return Keyword.FUNCTION
+	case "let":
+		return Keyword.LET
+	case "main":
+		return Keyword.MAIN
+	case "return":
+		return Keyword.RETURN
+	case:
+		return DataType.IDENTIFIER
+	}
+}
