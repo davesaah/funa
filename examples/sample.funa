@@ -1,0 +1,6 @@
+"Hello World"
+233
+let some = 5;
+function app() {
+	someone = 34;
+}
