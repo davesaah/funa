@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug",
+            "type": "lldb",
+            "request": "launch",
+            "args": [
+                "run",
+                "examples/sample.funa"
+            ],
+            "program": "${workspaceRoot}/bin/${workspaceFolderBasename}",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Build Odin (Debug)",
+            "env": {
+                "ASAN_OPTIONS": "halt_on_error=1"
+            },
+            "sourceLanguages": [
+                "odin"
+            ]
+        },
+        {
+            "name": "Optimised (Run)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/${workspaceFolderBasename}",
+            "args": [
+                "run",
+                "examples/sample.funa"
+            ],
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Build Odin (Release)",
+            "sourceLanguages": [
+                "odin"
+            ]
+        }
+    ]
+}

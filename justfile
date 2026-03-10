@@ -2,8 +2,14 @@ test:
 	@odin test tests
 
 build:
-	@odin build .
+	@odin build . -debug -out:bin/funa
+
+release:
+	@odin build . -o:speed -out:bin/funa
+
+debug: build
+	@gdb ./bin/funa
 
 run: build
-	@./funa run examples/sample.funa
-	@rm funa
+	@./bin/funa run examples/sample.funa
+	@rm ./bin/funa
