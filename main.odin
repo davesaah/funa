@@ -4,7 +4,7 @@ import "core:fmt"
 import "lexer"
 
 main :: proc() {
-	l := lexer.new("1$")
+	l := lexer.new("'Hello world';")
 	tok := lexer.get_next_token(&l)
 	fmt.println(tok)
 	tok = lexer.get_next_token(&l)

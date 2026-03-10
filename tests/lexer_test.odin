@@ -32,8 +32,6 @@ get_next_token_symbols_single :: proc(t: ^testing.T) {
 		{")", ")", token.Symbol.RPAREN},
 		{"{", "{", token.Symbol.LCURLY},
 		{"}", "}", token.Symbol.RCURLY},
-		{"\"", "\"", token.Symbol.QUOTE},
-		{"'", "'", token.Symbol.QUOTE},
 	}
 
 	for tc in test_cases {
@@ -51,12 +49,11 @@ get_next_token_symbols_single :: proc(t: ^testing.T) {
 
 @(test)
 get_next_token_symbols_multiple :: proc(t: ^testing.T) {
-	input := "'#$*(&)"
+	input := "#$*(&)"
 	test_cases := []struct {
 		expected_literal: string,
 		expected_type:    token.Symbol,
 	} {
-		{"'", token.Symbol.QUOTE},
 		{"#", token.Symbol.BANG},
 		{"$", token.Symbol.ILLEGAL},
 		{"*", token.Symbol.ASTERISK},
@@ -109,7 +106,7 @@ get_next_token_datatypes_single :: proc(t: ^testing.T) {
 
 @(test)
 get_next_token_datatypes_multiple :: proc(t: ^testing.T) {
-	input := "12345 786 1 89"
+	input := "12345 786 1 89 'Hello World' \"Some\""
 	test_cases := []struct {
 		expected_literal: string,
 		expected_type:    token.DataType,
@@ -118,6 +115,8 @@ get_next_token_datatypes_multiple :: proc(t: ^testing.T) {
 		{"786", token.DataType.NUMBER},
 		{"1", token.DataType.NUMBER},
 		{"89", token.DataType.NUMBER},
+		{"Hello World", token.DataType.STRING},
+		{"Some", token.DataType.STRING},
 	}
 
 	l := lexer.new(input)

@@ -65,9 +65,25 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 	case '}':
 		tok.type = token.Symbol.RCURLY
 	case '"':
-		tok.type = token.Symbol.QUOTE
+		read_next_char(l) // skip opening quote
+		start = l.current_position
+		for l.current_char != '"' && l.current_char != 0 {
+			read_next_char(l)
+		}
+		tok.type = token.DataType.STRING
+		tok.literal = l.input[start:l.current_position]
+		read_next_char(l) // skip closing quote
+		return tok
 	case '\'':
-		tok.type = token.Symbol.QUOTE
+		read_next_char(l) // skip opening quote
+		start = l.current_position
+		for l.current_char != '\'' && l.current_char != 0 {
+			read_next_char(l)
+		}
+		tok.type = token.DataType.STRING
+		tok.literal = l.input[start:l.current_position]
+		read_next_char(l) // skip closing quote
+		return tok
 	case 0:
 		tok.type = token.Symbol.EOF
 		return tok

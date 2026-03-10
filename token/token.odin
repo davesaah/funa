@@ -34,7 +34,6 @@ Symbol :: enum {
 	RCURLY,
 	ILLEGAL,
 	EOF,
-	QUOTE,
 }
 
 DataType :: enum {
