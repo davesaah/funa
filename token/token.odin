@@ -12,7 +12,6 @@ Token :: struct {
 }
 
 Symbol :: enum {
-	DOT,
 	COMMA,
 	COLON,
 	UNDERSCORE,
@@ -37,7 +36,8 @@ Symbol :: enum {
 }
 
 DataType :: enum {
-	NUMBER,
+	INTEGER,
+	FLOAT,
 	STRING,
 	IDENTIFIER,
 }

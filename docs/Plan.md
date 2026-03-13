@@ -16,7 +16,6 @@
 - list.
 - map.
 - string.
-- file.
 
 ## Tokens
 
@@ -35,7 +34,6 @@
 - list: ordered collection. [1,2,3]/["some", "one"]
 - map: key-value collection. {"key": "value"}
 - string: string type. `"`/`'`
-- file: file type.
 
 - identifier: user defined functions, variables.
     - rule -> must begin with text + _ (opt) + number (opt, can only be at the end)

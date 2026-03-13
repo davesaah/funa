@@ -1,6 +1,7 @@
 "Hello World"
 'some'
 233
+23.3
 let some = 5;
 function app() {
 	someone = 34;

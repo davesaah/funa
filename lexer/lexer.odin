@@ -1,6 +1,7 @@
 package lexer
 
 import "../token"
+import "core:strings"
 
 Lexer :: struct {
 	input:            string,
@@ -30,8 +31,6 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 	start := l.current_position
 
 	switch l.current_char {
-	case '.':
-		tok.type = token.Symbol.DOT
 	case ',':
 		tok.type = token.Symbol.COMMA
 	case ':':
@@ -97,8 +96,14 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 			for is_number(l.current_char) {
 				read_next_char(l)
 			}
-			tok.type = token.DataType.NUMBER
+
 			tok.literal = l.input[start:l.current_position]
+
+			if strings.contains(tok.literal, ".") {
+				tok.type = token.DataType.FLOAT
+			} else {
+				tok.type = token.DataType.INTEGER
+			}
 			return tok
 		} else if is_letter(l.current_char) {
 			for is_letter(l.current_char) || is_number(l.current_char) {
@@ -146,7 +151,7 @@ peek_char :: proc(l: ^Lexer) -> byte {
 
 @(private = "file")
 is_number :: proc(c: byte) -> bool {
-	return c >= '0' && c <= '9'
+	return (c >= '0' && c <= '9') || (c == '.')
 }
 
 @(private = "file")
