@@ -9,6 +9,8 @@ TokenType :: union {
 Token :: struct {
 	literal: string,
 	type:    TokenType,
+	line:    int,
+	column:  int,
 }
 
 Symbol :: enum {
@@ -16,7 +18,6 @@ Symbol :: enum {
 	COLON,
 	UNDERSCORE,
 	PIPE,
-	SEMI_COLON,
 	BANG,
 	ASSIGNMENT,
 	EQUALS,

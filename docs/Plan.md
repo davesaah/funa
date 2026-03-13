@@ -45,3 +45,24 @@
 - `[]`: list literal grouping.
 - `()`: function call grouping.
 - `{}`: map literal grouping.
+
+
+## Strategy For Parser
+
+1. BNF Definition
+
+2. Parsing Strategy
+
+   - Recursive Descent: top-down approach, easy to debug and maintain, good for learning parser
+    concepts, easy error recovery and reporting. The behaviour is predictive.
+
+3. Parsing Logic Structure
+4. Create Abstract Syntax Trees
+5. Handle Any Errors
+
+> **Recursive Descent** is a top-down parsing technique that uses a set of recursive functions to parse
+> a language grammar.
+> - It starts from the top-level grammar rule and works downward.
+> - Each grammar rule is implemented as a separate function.
+> - It is predictive in behaviour. It looks ahead in the inpute to determine which rule to apply.
+> - Code and grammar is almost one-to-one.

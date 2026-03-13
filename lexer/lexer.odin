@@ -8,11 +8,14 @@ Lexer :: struct {
 	current_char:     byte,
 	current_position: int,
 	next_position:    int,
+	line:             int,
+	column:           int,
 }
 
 new :: proc(input: string) -> Lexer {
 	l := Lexer {
 		input = input,
+		line  = 1,
 	}
 
 	read_next_char(&l) // set l.current_char to the first one
@@ -21,14 +24,16 @@ new :: proc(input: string) -> Lexer {
 }
 
 get_next_token :: proc(l: ^Lexer) -> token.Token {
-	tok := token.Token{}
-
 	// remove whitespaces
 	for is_whitespace(l.current_char) {
 		read_next_char(l)
 	}
 
 	start := l.current_position
+	start_line := l.line
+	start_column := l.column
+
+	tok := token.Token{}
 
 	switch l.current_char {
 	case ',':
@@ -39,8 +44,6 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 		tok.type = token.Symbol.UNDERSCORE
 	case '|':
 		tok.type = token.Symbol.PIPE
-	case ';':
-		tok.type = token.Symbol.SEMI_COLON
 	case '#':
 		tok.type = token.Symbol.BANG
 	case '/':
@@ -72,10 +75,14 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 		}
 		tok.type = token.DataType.STRING
 		tok.literal = l.input[start:l.current_position]
+		tok.line = start_line
+		tok.column = start_column
 		read_next_char(l) // skip closing quote
 		return tok
 	case 0:
 		tok.type = token.Symbol.EOF
+		tok.line = start_line
+		tok.column = start_column
 		return tok
 	case '=':
 		if peek_char(l) == '=' {
@@ -104,6 +111,8 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 			} else {
 				tok.type = token.DataType.INTEGER
 			}
+			tok.line = start_line
+			tok.column = start_column
 			return tok
 		} else if is_letter(l.current_char) {
 			for is_letter(l.current_char) || is_number(l.current_char) {
@@ -111,6 +120,8 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 			}
 			tok.literal = l.input[start:l.current_position]
 			tok.type = token.lookup_identifier(tok.literal) // identifier or keyword
+			tok.line = start_line
+			tok.column = start_column
 			return tok
 		} else {
 			tok.type = token.Symbol.ILLEGAL
@@ -118,6 +129,8 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 	}
 
 	tok.literal = l.input[start:l.current_position + 1]
+	tok.line = start_line
+	tok.column = start_column
 	read_next_char(l)
 	return tok
 }
@@ -133,6 +146,14 @@ read_next_char :: proc(l: ^Lexer) {
 	l.current_char = l.input[l.next_position]
 	l.current_position = l.next_position
 	l.next_position += 1
+
+	// Track line and column correctly
+	if l.current_char == '\n' {
+		l.line += 1
+		l.column = 0
+	} else {
+		l.column += 1
+	}
 }
 
 

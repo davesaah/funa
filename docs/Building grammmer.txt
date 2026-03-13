@@ -1,0 +1,22 @@
+* --> 0 or many
+? --> 0 or 1
+
+<program> ::= <statement>*
+
+<statement> ::= <let-bind>
+              | <fn-def>
+
+<let-bind> ::= LET IDENT ASSIGNMENT <expr>
+
+<expr> ::= NUMBER | STRING
+
+<fn-def> ::= FUNCTION IDENT LPAREN <param-list>? RPAREN COLON <type> <block>
+
+<param-list> ::= <param> ( COMMA <param> )*
+<param> ::= IDENT COLON <type>
+
+<block> ::= LBRACE <statement>* <return-stmt> RBRACE
+
+<return-stmt> ::= RETURN <expr>
+
+<type> ::= "integer" | "string" | "float"

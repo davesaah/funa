@@ -12,9 +12,6 @@
             "program": "${workspaceRoot}/bin/${workspaceFolderBasename}",
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Build Odin (Debug)",
-            "env": {
-                "ASAN_OPTIONS": "halt_on_error=1"
-            },
             "sourceLanguages": [
                 "odin"
             ]

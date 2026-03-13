@@ -19,7 +19,6 @@ get_next_token_symbols_single :: proc(t: ^testing.T) {
 		{":", ":", token.Symbol.COLON},
 		{"_", "_", token.Symbol.UNDERSCORE},
 		{"|", "|", token.Symbol.PIPE},
-		{";", ";", token.Symbol.SEMI_COLON},
 		{"#", "#", token.Symbol.BANG},
 		{"/", "/", token.Symbol.SLASH},
 		{"*", "*", token.Symbol.ASTERISK},

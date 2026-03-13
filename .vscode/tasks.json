@@ -4,7 +4,7 @@
         {
             "label": "Build Odin (Debug)",
             "type": "shell",
-            "command": "mkdir -p bin && odin build . -debug -sanitize:address -out:bin/${workspaceFolderBasename}",
+            "command": "mkdir -p bin && odin build . -debug -out:bin/${workspaceFolderBasename}",
             "group": {
                 "kind": "build",
                 "isDefault": true

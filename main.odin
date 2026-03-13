@@ -1,12 +1,14 @@
 package main
 
+import "ast"
 import "core:bufio"
 import "core:fmt"
 import "core:io"
 import "core:mem"
 import "core:os"
+import "core:strings"
 import "lexer"
-import "token"
+import "parser"
 
 main :: proc() {
 	track: mem.Tracking_Allocator
@@ -49,11 +51,19 @@ run :: proc() {
 	bufio.reader_init(&reader, os.stream_from_handle(f))
 	defer bufio.reader_destroy(&reader)
 
+	arena: mem.Dynamic_Arena
+	mem.dynamic_arena_init(&arena)
+	defer mem.dynamic_arena_destroy(&arena)
+	context.allocator = mem.dynamic_arena_allocator(&arena)
+
+	str_builder: strings.Builder
+	strings.builder_init(&str_builder)
+
 	switch cmd {
 	case "run":
 		for {
 			line, read_err := bufio.reader_read_string(&reader, '\n')
-			defer delete(line)
+			strings.write_string(&str_builder, line)
 
 			if read_err == io.Error.EOF {
 				break
@@ -63,18 +73,24 @@ run :: proc() {
 				fmt.eprintfln("Error: failed to read from '%s': %v", filename, read_err)
 				os.exit(1)
 			}
-
-			run_lexer(line)
 		}
+		source := strings.to_string(str_builder)
+		program := run_parser(source)
+		fmt.println(program)
 	}
 }
 
-run_lexer :: proc(s: string) {
-	l := lexer.new(s)
+run_parser :: proc(input: string) -> ast.Program {
+	l := lexer.new(input)
+	p := parser.new(&l)
+	prog := parser.parse_program(&p)
 
-	for tok := lexer.get_next_token(&l);
-	    tok.type != token.Symbol.EOF;
-	    tok = lexer.get_next_token(&l) {
-		fmt.println(tok)
+	if len(p.errors) > 0 {
+		for err in p.errors {
+			fmt.printfln(err.message)
+		}
+		os.exit(1)
 	}
+
+	return prog
 }
