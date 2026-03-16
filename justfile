@@ -2,6 +2,7 @@ test:
 	@odin test tests
 
 build:
+	@mkdir -p bin
 	@odin build . -debug -out:bin/funa
 
 release:
@@ -12,4 +13,4 @@ debug: build
 
 run: build
 	@./bin/funa run examples/sample.funa
-	@rm ./bin/funa
+	@rm -rf bin

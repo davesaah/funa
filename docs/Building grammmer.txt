@@ -3,10 +3,10 @@
 
 <program> ::= <statement>*
 
-<statement> ::= <let-bind>
+<statement> ::= <var-bind>
               | <fn-def>
 
-<let-bind> ::= LET IDENT ASSIGNMENT <expr>
+<var-bind> ::= LET IDENT ASSIGNMENT <expr>
 
 <expr> ::= NUMBER | STRING
 

@@ -48,7 +48,7 @@ run :: proc() {
 	}
 
 	reader: bufio.Reader
-	bufio.reader_init(&reader, os.stream_from_handle(f))
+	bufio.reader_init(&reader, os.to_reader(f))
 	defer bufio.reader_destroy(&reader)
 
 	arena: mem.Dynamic_Arena
@@ -74,6 +74,7 @@ run :: proc() {
 				os.exit(1)
 			}
 		}
+
 		source := strings.to_string(str_builder)
 		program := run_parser(source)
 		fmt.println(program)
@@ -85,10 +86,8 @@ run_parser :: proc(input: string) -> ast.Program {
 	p := parser.new(&l)
 	prog := parser.parse_program(&p)
 
-	if len(p.errors) > 0 {
-		for err in p.errors {
-			fmt.printfln(err.message)
-		}
+	if p.error_msg != "" {
+		fmt.printfln(p.error_msg)
 		os.exit(1)
 	}
 

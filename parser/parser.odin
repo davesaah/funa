@@ -4,28 +4,29 @@ import "../ast"
 import "../lexer"
 import "../token"
 import "core:fmt"
+import "core:os"
+import "core:slice"
 import "core:strconv"
 
 
 Parser :: struct {
 	lexer:         ^lexer.Lexer,
 	current_token: token.Token,
-	errors:        [dynamic]ParserError,
-}
-
-ParserError :: struct {
-	message: string,
+	peek_token:    token.Token,
+	error_msg:     string,
 }
 
 @(private = "file")
 next_token :: proc(p: ^Parser) {
-	p.current_token = lexer.get_next_token(p.lexer)
+	p.current_token = p.peek_token
+	p.peek_token = lexer.get_next_token(p.lexer)
 }
 
 new :: proc(l: ^lexer.Lexer) -> Parser {
 	p := Parser {
 		lexer = l,
 	}
+	next_token(&p) // set peek token
 	next_token(&p) // set current token
 
 	return p
@@ -34,13 +35,26 @@ new :: proc(l: ^lexer.Lexer) -> Parser {
 parse_program :: proc(p: ^Parser) -> ast.Program {
 	program: ast.Program
 
-	for p.current_token.type != token.Symbol.EOF {
+	stmt_loop: for p.current_token.type != token.Symbol.EOF {
+		if p.current_token.type == token.Symbol.ILLEGAL {
+			fmt.printfln(
+				"Illegal token on line %d, column %d: '%s'",
+				p.current_token.line,
+				p.current_token.column,
+				p.current_token.literal,
+			)
+			os.exit(1)
+		}
+
 		stmt := parse_statement(p)
+
+		// check for errors
+		if p.error_msg != "" {
+			break stmt_loop
+		}
 
 		if stmt != nil {
 			append(&program.Statements, stmt)
-		} else {
-			break
 		}
 		next_token(p)
 	}
@@ -58,8 +72,7 @@ parse_statement :: proc(p: ^Parser) -> ast.Statement {
 	// 	return parse_fn_def(p)
 
 	case:
-		syntax_error(p, token.Keyword.LET)
-		// syntax_error(p, token.Keyword.FUNCTION)
+		syntax_error(p, []token.TokenType{token.Keyword.LET, token.Keyword.FUNCTION})
 		return nil
 	}
 }
@@ -67,23 +80,28 @@ parse_statement :: proc(p: ^Parser) -> ast.Statement {
 @(private = "file")
 parse_var_bind :: proc(p: ^Parser) -> ast.VarBind {
 	bind: ast.VarBind
-	next_token(p) // consume LET
+	// next_token(p) // consume LET
 
-	if p.current_token.type != token.DataType.IDENTIFIER {
-		syntax_error(p, token.DataType.IDENTIFIER)
+	tok, ok := expect_peek(p, []token.TokenType{token.DataType.IDENTIFIER})
+	if !ok {
 		return bind
 	}
-	bind.Identifier = p.current_token.literal
-	next_token(p) // consume IDENTIFIER
+	bind.Identifier = tok.literal
 
-	if p.current_token.type != token.Symbol.ASSIGNMENT {
-		syntax_error(p, token.Symbol.ASSIGNMENT)
+	_, ok = expect_peek(p, []token.TokenType{token.Symbol.ASSIGNMENT})
+	if !ok {
 		return bind
 	}
-	next_token(p) // consume ASSIGNMENT
+
+	_, ok = expect_peek(
+		p,
+		[]token.TokenType{token.DataType.INTEGER, token.DataType.FLOAT, token.DataType.STRING},
+	)
+	if !ok {
+		return bind
+	}
 
 	bind.Value = parse_value(p)
-
 	return bind
 }
 
@@ -102,33 +120,44 @@ parse_value :: proc(p: ^Parser) -> ast.Value {
 		return ast.Value(p.current_token.literal)
 
 	case:
-		parser_error(p, "invalid value")
 		return nil
 	}
 }
 
-
-@(private = "file")
-parser_error :: proc(p: ^Parser, msg: string) {
-	err := ParserError {
-		message = msg,
-	}
-
-	append(&p.errors, err)
+syntax_error :: proc(p: ^Parser, expected: []token.TokenType) {
+	p.error_msg = fmt.tprintf(
+		"Syntax Error on line %d, column %d: expected %v, got %v",
+		p.peek_token.line,
+		p.peek_token.column,
+		expected,
+		p.peek_token.type,
+	)
 }
 
-
 @(private = "file")
-syntax_error :: proc(p: ^Parser, expected: token.TokenType) {
-	msg := fmt.tprintf(
-		"Syntax Error on line %d, column %d: expected %v, got %v",
-		p.current_token.line,
-        p.current_token.column,
-		expected,
-		p.current_token.type,
-	)
+expect_peek :: proc(p: ^Parser, expected: []token.TokenType) -> (token.Token, bool) {
+	tok := p.peek_token
 
-	parser_error(p, msg)
+	// Check if token is illegal
+	if tok.type == token.Symbol.ILLEGAL {
+		p.error_msg = fmt.tprintf(
+			"Illegal token on line %d, column %d: '%s'",
+			tok.line,
+			tok.column,
+			tok.literal,
+		)
+		// Skip illegal token to recover
+		next_token(p)
+		return tok, false
+	}
+
+	// Check if token is one of expected types
+	ok := slice.any_of(expected, tok.type)
+	if !ok {
+		syntax_error(p, expected)
+	}
+	next_token(p)
+	return tok, ok
 }
 
 // @(private = "file")

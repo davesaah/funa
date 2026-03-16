@@ -98,6 +98,25 @@ get_next_token :: proc(l: ^Lexer) -> token.Token {
 		} else {
 			tok.type = token.Symbol.ILLEGAL
 		}
+	case '-':
+		if is_number(peek_char(l)) {
+			read_next_char(l)
+
+			for is_number(l.current_char) {
+				read_next_char(l)
+			}
+
+			tok.literal = l.input[start:l.current_position]
+
+			if strings.contains(tok.literal, ".") {
+				tok.type = token.DataType.FLOAT
+			} else {
+				tok.type = token.DataType.INTEGER
+			}
+			tok.line = start_line
+			tok.column = start_column
+			return tok
+		}
 	case:
 		if is_number(l.current_char) {
 			for is_number(l.current_char) {
