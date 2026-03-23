@@ -55,7 +55,7 @@ lookup_identifier :: proc(s: string) -> TokenType {
 	switch s {
 	case "using":
 		return Keyword.USING
-	case "function":
+	case "fn":
 		return Keyword.FUNCTION
 	case "let":
 		return Keyword.LET

@@ -10,7 +10,7 @@
 
 <expr> ::= NUMBER | STRING
 
-<fn-def> ::= FUNCTION IDENT LPAREN <param-list>? RPAREN COLON <type> <block>
+<fn-def> ::= FUNCTION IDENT LPAREN <param-list>? RPAREN COLON <type>? <block>
 
 <param-list> ::= <param> ( COMMA <param> )*
 <param> ::= IDENT COLON <type>

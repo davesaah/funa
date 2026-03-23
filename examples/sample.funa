@@ -2,3 +2,7 @@ let some = 4
 let some = 2
 let some = 1
 let some = 0
+
+fn list_files() {
+    return 
+}

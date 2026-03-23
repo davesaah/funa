@@ -36,7 +36,7 @@
 - string: string type. `"`/`'`
 
 - identifier: user defined functions, variables.
-    - rule -> must begin with text + _ (opt) + number (opt, can only be at the end)
+  - rule -> must begin with text + _ (opt) + number (opt, can only be at the end)
 
 - `:` separating key in map.
 - `.`: access functions from modules.
@@ -45,7 +45,6 @@
 - `[]`: list literal grouping.
 - `()`: function call grouping.
 - `{}`: map literal grouping.
-
 
 ## Strategy For Parser
 
@@ -62,6 +61,7 @@
 
 > **Recursive Descent** is a top-down parsing technique that uses a set of recursive functions to parse
 > a language grammar.
+>
 > - It starts from the top-level grammar rule and works downward.
 > - Each grammar rule is implemented as a separate function.
 > - It is predictive in behaviour. It looks ahead in the inpute to determine which rule to apply.

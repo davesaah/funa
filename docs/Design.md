@@ -21,7 +21,7 @@
 
 ## Compiler Architecture
 
-1. Translates AST 
+1. Translates AST
 2. Intermediate representation
 3. Binary
 
@@ -29,21 +29,20 @@
 
 - Executes function pipelines.
 - Needs to manage:
-    - Lazy evaluation.
-    - External command processes.
-    - Function composition.
-    - Module loading.
-    - Errors.
+  - Lazy evaluation.
+  - External command processes.
+  - Function composition.
+  - Module loading.
+  - Errors.
 
 ## Module & Extensibility System
 
 - Core: gnu tools
 - Module should include:
-    - Only what user imports
-    - Map module functions to implementations (gnu util commands)
+  - Only what user imports
+  - Map module functions to implementations (gnu util commands)
 
 ## Error Handling & Type Safety
 
 - Compile-time checking.
 - Functional-style error propagation (e.g. `Result<T, Error>` stream)
-

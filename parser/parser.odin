@@ -68,8 +68,8 @@ parse_statement :: proc(p: ^Parser) -> ast.Statement {
 	case token.Keyword.LET:
 		return parse_var_bind(p)
 
-	// case token.Keyword.FUNCTION:
-	// 	return parse_fn_def(p)
+	case token.Keyword.FUNCTION:
+		return parse_fn_def(p)
 
 	case:
 		syntax_error(p, []token.TokenType{token.Keyword.LET, token.Keyword.FUNCTION})
@@ -160,8 +160,8 @@ expect_peek :: proc(p: ^Parser, expected: []token.TokenType) -> (token.Token, bo
 	return tok, ok
 }
 
-// @(private = "file")
-// parse_fn_def :: proc(p: ^Parser) -> ast.FnDef {}
+@(private = "file")
+parse_fn_def :: proc(p: ^Parser) -> ast.FnDef {return ast.FnDef{}}
 
 // @(private = "file")
 // parse_param :: proc() -> ast.Param {}
